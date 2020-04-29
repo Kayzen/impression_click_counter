@@ -35,12 +35,13 @@ public class Constants {
   public static final int SHARED_OBJECT_QUEUE_SIZE = 5_000;
   public static final int HUNDRED_THOUSAND = 100_000;
   public static final int TEN_MILLION = 10_000_000;
-  //TODO-dgpatil uncomment after testing
-  //public static final int FIFTY_MILLION = 50_000_000;
-  //public static final int TWO_HUNDRED_MILLION = 200_000_000;
+  //TODO-dgpatil comment after testing
 
-  public static final int FIFTY_MILLION = 500;
-  public static final int TWO_HUNDRED_MILLION = 200;
+  public static final int FIFTY_MILLION = 50_000_000;
+  public static final int TWO_HUNDRED_MILLION = 200_000_000;
+
+  //public static final int FIFTY_MILLION = 500;
+  //public static final int TWO_HUNDRED_MILLION = 200;
 
   public static final long LONG_ZERO = 0l;
   public static final String CAMPAIGN_TYPE = "campaignType";
@@ -110,7 +111,6 @@ public class Constants {
   public static final String AERO_HKG = "hkg";
   public static final String AERO_AMS = "ams";
 
-  //TODO-dgpatil set proper set and bin name
   public static final String SET = "deviceid";
   public static final String IMPRESSION_BIN = "imp_count";
   public static final String CLICK_BIN = "clk_count";

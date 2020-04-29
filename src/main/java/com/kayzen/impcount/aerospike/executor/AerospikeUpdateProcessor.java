@@ -56,18 +56,18 @@ public class AerospikeUpdateProcessor implements Serializable, Runnable {
             aerospikeProcessor.processMySQLData(mySQLAerospikeData);
           }
 
-          //TODO-dgpatil remove this after testing
-          SyncBatchUpdateRequest syncBatchUpdateRequestImp = aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION);
-          SyncBatchUpdateRequest syncBatchUpdateRequestClick = aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK);
+          //TODO-dgpatil uncomment this for testing
+          //SyncBatchUpdateRequest syncBatchUpdateRequestImp = aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION);
+          //SyncBatchUpdateRequest syncBatchUpdateRequestClick = aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK);
 
           logger.info("Completed build aerospike data");
-          //TODO-dgpatil commenting aerospike
-          /*
-          AerospikeRequest aerospikeRequest = new AerospikeRequest(aeroConfig, aerospikeProcessor.getBatchUpdateRequest(),dataCenter);
-          if (aerospikeRequest.process()) {
+          //TODO-dgpatil comment beolw block for  aerospike data testing
+          AerospikeRequest aerospikeRequestImp = new AerospikeRequest(aeroConfig, aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION),dataCenter);
+          AerospikeRequest aerospikeRequestClick = new AerospikeRequest(aeroConfig, aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK),dataCenter);
+          if (aerospikeRequestImp.process() && aerospikeRequestClick.process()) {
             mySQLAerospikeData.markProcessed();
           }
-           */
+
         } else {
           logger.info(identifier + "Sleeping since no data available");
           Thread.sleep(Constants.FIVE_HUNDRED_MILLS);
