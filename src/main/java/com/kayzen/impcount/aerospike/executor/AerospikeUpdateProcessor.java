@@ -57,11 +57,18 @@ public class AerospikeUpdateProcessor implements Serializable, Runnable {
           }
 
           //TODO-dgpatil uncomment this for testing
-          //SyncBatchUpdateRequest syncBatchUpdateRequestImp = aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION);
-          //SyncBatchUpdateRequest syncBatchUpdateRequestClick = aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK);
+          /*
+          SyncBatchUpdateRequest syncBatchUpdateRequestImp = aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION);
+          SyncBatchUpdateRequest syncBatchUpdateRequestClick = aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK);
+
+          if (true && true) {
+            mySQLAerospikeData.markProcessed();
+          }
+           */
 
           logger.info("Completed build aerospike data");
           //TODO-dgpatil comment beolw block for  aerospike data testing
+
           AerospikeRequest aerospikeRequestImp = new AerospikeRequest(aeroConfig, aerospikeProcessor.getBatchUpdateRequest(Constants.IMPRESSION),dataCenter);
           AerospikeRequest aerospikeRequestClick = new AerospikeRequest(aeroConfig, aerospikeProcessor.getBatchUpdateRequest(Constants.CLICK),dataCenter);
           if (aerospikeRequestImp.process() && aerospikeRequestClick.process()) {

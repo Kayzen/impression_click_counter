@@ -49,21 +49,18 @@ public class AerospikeRequest {
     RequestProcessor requestProcessor = null;
     long startTime = System.currentTimeMillis();
 
-    RequestProcessor requestProcessorDCA = new RequestProcessor(
-        aeroConfig.getString(Constants.DCA_AERO_ENDPOINT), reqBody, rowCount, retries,
-        Constants.AERO_DCA);
     if(dc == Datacenter.DCA) {
       requestProcessor = new RequestProcessor(
           aeroConfig.getString(Constants.DCA_AERO_ENDPOINT), reqBody, rowCount, retries,
-          Constants.AERO_DCA);
+          Datacenter.DCA,aeroConfig);
     }else if(dc == Datacenter.HKG) {
       requestProcessor = new RequestProcessor(
           aeroConfig.getString(Constants.HKG_AERO_ENDPOINT), reqBody, rowCount, retries,
-          Constants.AERO_HKG);
+          Datacenter.HKG,aeroConfig);
     }else if(dc == Datacenter.AMS) {
       requestProcessor = new RequestProcessor(
           aeroConfig.getString(Constants.AMS_AERO_ENDPOINT), reqBody, rowCount, retries,
-          Constants.AERO_AMS);
+          Datacenter.AMS,aeroConfig);
     }
 
     if (requestProcessor != null) {
@@ -93,15 +90,18 @@ public class AerospikeRequest {
     private int rowCount;
     private int numRetries;
     private CompletableFuture<Boolean> responseValidated;
-    private String identifier;
+    private Datacenter identifier;
+    private Config aeroConfig;
 
-    private RequestProcessor(String url, byte[] body, int count, int retries, String identifier) {
+    private RequestProcessor(String url, byte[] body, int count, int retries, Datacenter identifier,
+        Config aeroConfig) {
       this.requestUrl = url;
       this.requestBody = body;
       this.rowCount = count;
       this.numRetries = retries;
       this.responseValidated = new CompletableFuture<>();
       this.identifier = identifier;
+      this.aeroConfig = aeroConfig;
     }
 
     CompletableFuture<Boolean> process() {
@@ -110,9 +110,17 @@ public class AerospikeRequest {
 
     CompletableFuture<Boolean> process(int numRetries) {
       AsyncHttpService asyncHttpService = AsyncHttpService.getInstance();
-      asyncHttpService
-          .sendPostRequest(requestUrl, requestBody, identifier)
-          .whenCompleteAsync((response, error) -> {
+      CompletableFuture<Response> res;
+      String proxyHost = aeroConfig.getString(Constants.PROXY_HOST);
+      int proxyPort = aeroConfig.getInt(Constants.PROXY_PORT);
+      if(identifier == Datacenter.DCA){
+        res = asyncHttpService
+            .sendPostRequest(requestUrl, requestBody, identifier.getValue());
+      }else{
+        res = asyncHttpService
+            .sendPostRequest(requestUrl, requestBody, identifier.getValue(),proxyHost,proxyPort);
+      }
+          res.whenCompleteAsync((response, error) -> {
             if (error != null || response == null || !validResponse(response)) {
               if (numRetries > 0) {
                 process(numRetries - 1);

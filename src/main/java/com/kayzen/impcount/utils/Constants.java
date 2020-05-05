@@ -35,11 +35,12 @@ public class Constants {
   public static final int SHARED_OBJECT_QUEUE_SIZE = 5_000;
   public static final int HUNDRED_THOUSAND = 100_000;
   public static final int TEN_MILLION = 10_000_000;
-  //TODO-dgpatil comment after testing
 
+  //TODO-dgpatil comment for testing
   public static final int FIFTY_MILLION = 50_000_000;
   public static final int TWO_HUNDRED_MILLION = 200_000_000;
 
+  //TODO-dgpatil uncomment for testing
   //public static final int FIFTY_MILLION = 500;
   //public static final int TWO_HUNDRED_MILLION = 200;
 
@@ -110,6 +111,8 @@ public class Constants {
   public static final String AERO_DCA = "dca";
   public static final String AERO_HKG = "hkg";
   public static final String AERO_AMS = "ams";
+  public static final String PROXY_HOST = "proxyHost";
+  public static final String PROXY_PORT = "proxyPort";
 
   public static final String SET = "deviceid";
   public static final String IMPRESSION_BIN = "imp_count";
