@@ -44,21 +44,21 @@ public class AerospikeUpdateExecutor implements Runnable, BaseExecutor {
     SharedDataObject.setKeepReadingQueues(true);
     executor = Executors.newFixedThreadPool(numberOfWriteThreads * Datacenter.values().length);
     for (int i = 0; i < numberOfWriteThreads; i++) {
-      for (Datacenter dc:Datacenter.values()) {
+      MySqlDatabase database = null;
+      try {
+        DBContext dbContext = new DBContext(environment,dbHostName, LoggerFactory.getLogger(AerospikeUpdateProcessor.class));
+        database = new MySqlDatabase(dbContext);
+      } catch (Exception e) {
+        logger.error("Exception occurred during DB connection . Exception:", e);
+        System.exit(1);
+      }
+      for (Datacenter dc : Datacenter.values()) {
         logger.info("Starting AerospikeUpdateExecutor thread:" + i);
-        MySqlDatabase database = null;
-        try {
-          DBContext dbContext = new DBContext(environment,dbHostName, LoggerFactory
-              .getLogger(AerospikeUpdateProcessor.class));
-          database = new MySqlDatabase(dbContext);
-          AerospikeUpdateProcessor aerospikeUpdateProcessor = new AerospikeUpdateProcessor(database, batchSize,
-              aeroConfig, i,dc);
-          executor.execute(aerospikeUpdateProcessor);
-          aerospikeUpdateProcessors.add(aerospikeUpdateProcessor);
-        } catch (Exception e) {
-          logger.error("Exception occurred during DB connection . Exception:", e);
-          System.exit(1);
-        }
+        AerospikeUpdateProcessor aerospikeUpdateProcessor = new AerospikeUpdateProcessor(database,
+            batchSize, aeroConfig, i, dc);
+        executor.execute(aerospikeUpdateProcessor);
+        aerospikeUpdateProcessors.add(aerospikeUpdateProcessor);
+
       }
     }
     executor.shutdown(); // Disable new tasks from being submitted
