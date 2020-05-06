@@ -98,6 +98,7 @@ public class Constants {
   public static final String MAP = ".map";
 
   public static final String IMP_BIDS_MAP_FILE = "/ImpressionBids-REPLACE_DATE.map";
+  public static final String CLICK_BIDS_MAP_FILE = "/ClickBids-REPLACE_DATE.map";
   public static final String THREAD_PARTITION_MAP_FILE = "/ThreadPartition.map";
 
   public static final String CPM = "cpm";

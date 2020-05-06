@@ -200,11 +200,20 @@ public class BatchDataProcessor implements Serializable, Runnable {
   private void handleImpressionObject(ImpressionObject impressionObject) {
     //Check if we have already seen an event for this bid-id.
     if (impressionObject.getBidId() != null && !impressionObject.getBidId().isEmpty()) {
-      if (!SharedDataObject.impBidsMap.containsKey(impressionObject.getBidId())) {
-        SharedDataObject.impBidsMap.put(impressionObject.getBidId(), 0);
-      } else {
-        //Already considered the event from this bid-id.
-        return;
+      if (impressionObject.getLogType() == Constants.eventTypeImpression ) {
+        if (!SharedDataObject.impBidsMap.containsKey(impressionObject.getBidId())) {
+          SharedDataObject.impBidsMap.put(impressionObject.getBidId(), 0);
+        } else {
+          //Already considered the event from this bid-id.
+          return;
+        }
+      } else if (impressionObject.getLogType() == Constants.eventTypeClick){
+        if (!SharedDataObject.clickBidsMap.containsKey(impressionObject.getBidId())) {
+          SharedDataObject.clickBidsMap.put(impressionObject.getBidId(), 0);
+        } else {
+          //Already considered the event from this bid-id.
+          return;
+        }
       }
     }
 

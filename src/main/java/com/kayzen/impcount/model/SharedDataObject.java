@@ -36,7 +36,7 @@ public class SharedDataObject {
   public static List<ChronicleMap<String, Long>> deviceMaps;
 
   public static ChronicleMap<String, Integer> impBidsMap;
-
+  public static ChronicleMap<String, Integer> clickBidsMap;
 
   public static void init(int size, String mapLocation) {
     try {
@@ -68,6 +68,15 @@ public class SharedDataObject {
           impBidsMapFile, "imp-bids-map", 100, Constants.TWO_HUNDRED_MILLION){};
       Future<ChronicleMap<String, Integer>> impBidsFutureMap = executor.submit(impChronicleMapLoader);
 
+      Utils.removeFile(mapLocation + Constants.CLICK_BIDS_MAP_FILE.replaceAll(
+          "REPLACE_DATE", Utils.getCurrentDate(System.currentTimeMillis() - Constants.ONE_DAY_MILLS)));
+      File clickBidsMapFile = new File(
+          mapLocation + Constants.CLICK_BIDS_MAP_FILE.replaceAll(
+              "REPLACE_DATE", Utils.getCurrentDate(System.currentTimeMillis())));
+      ChronicleMapLoader<String, Integer> clickChronicleMapLoader = new ChronicleMapLoader<String, Integer>(
+          clickBidsMapFile, "click-bids-map", 100, Constants.TWO_HUNDRED_MILLION){};
+      Future<ChronicleMap<String, Integer>> clickBidsFutureMap = executor.submit(clickChronicleMapLoader);
+
       executor.shutdown(); // Disable new tasks from being submitted
 
       deviceMaps = new ArrayList<>();
@@ -88,6 +97,13 @@ public class SharedDataObject {
       impBidsMap = impBidsFutureMap.get();
       logger.info("Loaded imp map");
       if (impBidsMap == null) {
+        logger.error("Error loading imp chronicle map : Exiting...");
+        System.exit(1);
+      }
+
+      clickBidsMap = clickBidsFutureMap.get();
+      logger.info("Loaded click map");
+      if (clickBidsMap == null) {
         logger.error("Error loading imp chronicle map : Exiting...");
         System.exit(1);
       }
@@ -185,6 +201,7 @@ public class SharedDataObject {
     }
 
     impBidsMap.close();
+    clickBidsMap.close();
     logger.info("Done executing SharedDataObjectOpt.close()");
   }
 
