@@ -29,12 +29,18 @@ public class ChronicleMapLoader<K, V> implements Callable<ChronicleMap<K, V>> {
 
   @Override
   public ChronicleMap<K, V> call() throws Exception {
-    ChronicleMap<K, V> chronicleMap = ChronicleMapBuilder
+    ChronicleMapBuilder<K,V> chronicleMapBuilder = ChronicleMapBuilder
         .of(kClass, vClass)
         .name(identifier)
         .averageKeySize(keySize)
-        .entries(entriesSize)
-        .createOrRecoverPersistedTo(chronicleMapFile);
-    return chronicleMap;
+        .entries(entriesSize);
+    chronicleMapBuilder.setPreShutdownAction(() -> {
+      try {
+        Thread.sleep(60000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+    return chronicleMapBuilder.createOrRecoverPersistedTo(chronicleMapFile);
   }
 }

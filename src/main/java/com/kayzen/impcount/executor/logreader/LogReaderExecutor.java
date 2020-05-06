@@ -61,6 +61,7 @@ public class LogReaderExecutor implements Runnable, BaseExecutor {
       logger.error("BatchDataProcessorExecutor interrupted", e);
     }
     logger.info("Finished all LogFileReader threads.");
+    SharedDataObject.setKeepReadingQueues(false);
     long timeTaken = System.currentTimeMillis() - startTime;
     logger.info("LogReaderExecutorService: Total Time taken:" + timeTaken);
   }
