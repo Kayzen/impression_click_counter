@@ -31,8 +31,8 @@ public class ImpressionObjectProvider {
         eventTypeId = rawJson.get(Constants.LOG_ENTRY_TYPE).getAsInt();
       }
 
-      // Do only for IMP, CLK, CONV
-      if (eventTypeId == Constants.eventTypeImpression | eventTypeId == Constants.eventTypeClick) {
+      // Do only for IMP, CLK
+      if (eventTypeId == Constants.eventTypeImpression || eventTypeId == Constants.eventTypeClick) {
         fCapObject = getFromImpOrClick(eventTypeId, line, rawJson, latestKafkaOffset, kafkaConsumerIdentifier);
       } else {
         logger.warn("IGNORE5-Invalid eventTypeId=" + eventTypeId);
