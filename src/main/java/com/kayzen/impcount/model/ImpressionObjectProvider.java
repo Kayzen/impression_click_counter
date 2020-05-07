@@ -50,7 +50,7 @@ public class ImpressionObjectProvider {
     try {
       long appObjectId;
       String bidId = rawJson.get(Constants.BID_ID).getAsString();
-      if(rawJson.get(Constants.MOBILE_OBJECT_ID) != null)
+      if(rawJson.get(Constants.MOBILE_OBJECT_ID) != null && rawJson.get(Constants.MOBILE_OBJECT_ID).getAsLong() != 0)
         appObjectId = rawJson.get(Constants.MOBILE_OBJECT_ID).getAsLong();
       else{
         appObjectId = rawJson.get(Constants.ADV_ID).getAsLong();
