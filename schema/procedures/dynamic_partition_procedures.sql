@@ -24,7 +24,6 @@ BEGIN
 	SET @EVENT_NAME=CONCAT(_action, 'partition_',_table_name, '_', _interval);
 	CALL log_debug(@EVENT_NAME, _debug);
 	SET @INSERT_TIME=(select DATE_FORMAT(NOW(),'%Y%m%d%H%i'));
-	--CALL add_events_tracking_data(@EVENT_NAME, @INSERT_TIME, 'processing', 0);
 
 	IF(@PARTITION_EXISTS = 1) THEN
 		IF(_action = 'drop') THEN
@@ -33,11 +32,9 @@ BEGIN
 			CALL log_debug(@DROP_PARTITION, _debug);
 			CALL execute_query(@DROP_PARTITION);
 			SET @INSERT_TIME=(select DATE_FORMAT(NOW(),'%Y%m%d%H%i'));
-			--CALL add_events_tracking_data(@EVENT_NAME, @INSERT_TIME, 'processed', 1);
 			CALL log_debug(CONCAT(@PARTITION_NAME, ' partition droped'), _debug);
 		ELSE
 			CALL log_info(CONCAT(@PARTITION_NAME, ' exists. Nothing to do for create.'));
-			--CALL add_events_tracking_data(@EVENT_NAME, @INSERT_TIME, 'nothingtodo', 0);
 		END IF;
 	ELSEIF(@PARTITION_EXISTS = 0) THEN
 		IF(_action = 'create') THEN
@@ -48,11 +45,9 @@ BEGIN
 			CALL log_debug(@CREATE_PARTITION, _debug);
 			CALL execute_query(@CREATE_PARTITION);
 			SET @INSERT_TIME=(select DATE_FORMAT(NOW(),'%Y%m%d%H%i'));
-			--CALL add_events_tracking_data(@EVENT_NAME, @INSERT_TIME, 'processed', 1);
 			CALL log_debug(CONCAT(@PARTITION_NAME, ' partition created'), _debug);
 		ELSE
 			CALL log_info(CONCAT(@PARTITION_NAME, ' does not exists. Nothing to do for drop.'));
-			--CALL add_events_tracking_data(@EVENT_NAME, @INSERT_TIME, 'nothingtodo', 0);
 		END IF;
 	END IF;
 END $$
