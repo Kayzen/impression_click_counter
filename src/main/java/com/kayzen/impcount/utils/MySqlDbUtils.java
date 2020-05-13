@@ -121,7 +121,7 @@ public class MySqlDbUtils {
     String threadIndex,Datacenter dc) {
     try {
       Statement statement = database.createReadStatement();
-      statement.setFetchSize(batchSize);
+      //statement.setFetchSize(batchSize);
       String query = String.format(aerospikeDataReadQuery, batchSize)
         .replaceAll(REPLACE_THREAD_ID, threadIndex)
         .replaceAll(REPLACE_DATA_CENTER,dc.getValue());

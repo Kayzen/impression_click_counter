@@ -21,7 +21,7 @@ BEGIN
 			    SET @max_id = 0;
 			    SET @MIN_MAX_ID_QUERY = CONCAT('SELECT IF(min(id) IS NULL,-1,min(id)), IF(max(id) IS NULL,-1,max(id)) INTO @min_id, @max_id FROM device_impressions_daily WHERE day_int=',to_days(@EXECUTION_DAY));
 	        SET @UPDATE_STATEMENT = CONCAT('UPDATE device_impressions_daily SET status =\'expired\' WHERE day_int=',to_days(@EXECUTION_DAY));
-			    SET @UPDATE_STATEMENT = CONCAT(@UPDATE_STATEMENT, ' AND id>=REPLACE_START_ID AND id<REPLACE_END_ID AND status=\'active\'');
+			    SET @UPDATE_STATEMENT = CONCAT(@UPDATE_STATEMENT, ' AND id>=REPLACE_START_ID AND id<=REPLACE_END_ID AND status=\'active\'');
           CALL execute_query(@MIN_MAX_ID_QUERY);
 
 			
