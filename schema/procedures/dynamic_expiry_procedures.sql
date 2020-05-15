@@ -1,6 +1,6 @@
-DROP PROCEDURE IF EXISTS `expire_fcap_events`;
+DROP PROCEDURE IF EXISTS `expire_impression_counter_events`;
 DELIMITER $$
-CREATE PROCEDURE expire_fcap_events (_log_type ENUM('click','impression'),
+CREATE PROCEDURE expire_impression_counter_events (_log_type ENUM('click','impression'),
 									 _interval TINYINT,
 									 _chunk_size INT)
 BEGIN
