@@ -1,12 +1,11 @@
 DROP PROCEDURE IF EXISTS `expire_impression_counter_events`;
 DELIMITER $$
-CREATE PROCEDURE expire_impression_counter_events (_log_type ENUM('click','impression'),
-									 _interval TINYINT,
+CREATE PROCEDURE expire_impression_counter_events (_interval TINYINT,
 									 _chunk_size INT)
 BEGIN
 	SET @EXECUTION_DAY_QUERY=CONCAT('SELECT DATE_FORMAT(CURRENT_DATE - INTERVAL ', _interval, ' DAY, \'%Y%m%d\') INTO @EXECUTION_DAY');
 	CALL execute_query(@EXECUTION_DAY_QUERY);
-	SET @EVENT_NAME=CONCAT('expire_', _log_type, '_day_minus_', _interval);
+	SET @EVENT_NAME=CONCAT('expire_impression_click_day_minus_', _interval);
 
 	SET @today = (select DATE_FORMAT(NOW(),'%Y%m%d'));
 	IF(@EXECUTION_DAY < @today) THEN
