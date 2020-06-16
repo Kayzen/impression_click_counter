@@ -56,6 +56,7 @@ public class Constants {
   public static final String LEADER_LOOKUP_CLIENT_ID = "impcount_leaderLookup";
 
   public static final String IMPRESSION_COUNTER = "impression_counter";
+  public static final String MAPDB_RESTORER = "mapdbRestorer";
   public static final String AERO_IMPRESSION_COUNTER = "aero_impression_counter";
   public static final String IMPRESSION_COUNTER_LOG_FILENAME = "/logs/impression_counter";
   public static final String AERO_IMPRESSION_COUNTER_LOG_FILENAME = "/logs/aero_impression_counter";
