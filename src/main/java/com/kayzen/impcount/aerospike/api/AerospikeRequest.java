@@ -9,12 +9,14 @@ import com.kayzen.impcount.aerospike.api.Syncbatchupdate.SyncBatchUpdateRequest;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Datacenter;
 import java.util.concurrent.CompletableFuture;
-import org.apache.log4j.Logger;
+
 import org.asynchttpclient.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AerospikeRequest {
 
-  private static final Logger logger = Logger.getLogger(AerospikeRequest.class.getName());
+  private static final Logger logger = LoggerFactory.getLogger(AerospikeRequest.class.getName());
 
   private Config aeroConfig;
   private SyncBatchUpdateRequest protoSyncRequest;
@@ -116,6 +118,7 @@ public class AerospikeRequest {
       if(identifier == Datacenter.DCA){
         res = asyncHttpService
             .sendPostRequest(requestUrl, requestBody, identifier.getValue());
+        //logger.info(protoSyncRequestToJson());
       }else{
         res = asyncHttpService
             .sendPostRequest(requestUrl, requestBody, identifier.getValue(),proxyHost,proxyPort);

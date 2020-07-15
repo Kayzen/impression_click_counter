@@ -105,6 +105,7 @@ public class AerospikeImpressionCountPProcessor implements AerospikeProcessor {
     Set<String> removeSet = new HashSet<>();
 
     for(Entry<String,Map<Long,Long>> entry : addMap.entrySet()) {
+      appendSet.clear();
       String key = entry.getKey();
       for (Entry<Long,Long> valueEntry : entry.getValue().entrySet()) {
         appendSet.add(valueEntry.getKey() + ":" + valueEntry.getValue());
@@ -118,6 +119,7 @@ public class AerospikeImpressionCountPProcessor implements AerospikeProcessor {
 
 
     for(Entry<String,Map<Long,Long>> entry : removeMap.entrySet()) {
+      removeSet.clear();
       String key = entry.getKey();
       for (Entry<Long,Long> valueEntry : entry.getValue().entrySet()){
         removeSet.add(valueEntry.getKey() + ":" + valueEntry.getValue());

@@ -117,8 +117,8 @@ public class Constants {
   public static final String PROXY_PORT = "proxyPort";
 
   public static final String SET = "deviceid";
-  public static final String IMPRESSION_BIN = "imp_count";
-  public static final String CLICK_BIN = "clk_count";
+  public static final String IMPRESSION_BIN = "imp_count_1";
+  public static final String CLICK_BIN = "clk_count_1";
   public static final String APPEND_MAP = "map-append";
   public static final String REMOVE_MAP = "map-remove";
 
