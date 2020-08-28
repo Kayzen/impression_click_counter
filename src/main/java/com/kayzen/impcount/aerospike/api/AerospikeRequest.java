@@ -26,6 +26,7 @@ public class AerospikeRequest {
     aeroConfig = confProperties;
     protoSyncRequest = syncBatchUpdateRequest;
     this.dc = dc;
+    logger.info(protoSyncRequestToJson());
   }
 
   private byte[] requestToByteStream() {
@@ -115,14 +116,14 @@ public class AerospikeRequest {
       CompletableFuture<Response> res;
       String proxyHost = aeroConfig.getString(Constants.PROXY_HOST);
       int proxyPort = aeroConfig.getInt(Constants.PROXY_PORT);
-      if(identifier == Datacenter.DCA){
+      //if(identifier == Datacenter.DCA){
         res = asyncHttpService
             .sendPostRequest(requestUrl, requestBody, identifier.getValue());
         //logger.info(protoSyncRequestToJson());
-      }else{
+     /* }else{
         res = asyncHttpService
             .sendPostRequest(requestUrl, requestBody, identifier.getValue(),proxyHost,proxyPort);
-      }
+      }*/
           res.whenCompleteAsync((response, error) -> {
             if (error != null || response == null || !validResponse(response)) {
               if (numRetries > 0) {
