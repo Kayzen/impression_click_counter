@@ -1,6 +1,7 @@
 package com.kayzen.impcount.model;
 
 import com.applift.platform.commons.utils.Config;
+import com.applift.platform.commons.utils.DeviceIDUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -62,9 +63,20 @@ public class ImpressionObjectProvider {
         return null;
       }
 
+      String dpid_sha1 = rawJson.get(Constants.DPID_SHA1).getAsString();
+
+      //if dpid_sha1 is empty then use user_agent & device_ip for generating dpid_sha1
+      if ((dpid_sha1 == null) || dpid_sha1.isEmpty()) {
+        String userAgent = rawJson.get(Constants.USER_AGENT).getAsString();
+        String userIp = rawJson.get(Constants.USER_IP).getAsString();
+        if ((userAgent != null && !userAgent.isEmpty()) && (userIp != null && !userIp.isEmpty())) {
+          dpid_sha1 = DeviceIDUtils.getSha1(userAgent + userIp);
+        }
+      }
+
       return new ImpressionObject(rawJson.get(Constants.CAMPAIGN_ID).getAsInt() // campaignId,
           , eventTypeId /*Event Type*/
-          , rawJson.get(Constants.DPID_SHA1).getAsString()/* device id sha1 */
+          , dpid_sha1/* device id sha1 */
           , 0 /* thread_id */
           , 0 /* device_id_int */
           , bidId /* bidId */

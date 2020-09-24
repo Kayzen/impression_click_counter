@@ -89,6 +89,8 @@ public class Constants {
   public static final String MOBILE_OBJECT_ID = "mobile_object_id";
   public static final String ADV_ID = "advertiser_id";
   public static final String CAMPAIGN_TYPE_RAW = "campaign_type";
+  public static final String USER_AGENT = "user_agent";
+  public static final String USER_IP = "user_ip_string";
 
   public static final int eventTypeImpression = 2;
   public static final int eventTypeClick = 3;
