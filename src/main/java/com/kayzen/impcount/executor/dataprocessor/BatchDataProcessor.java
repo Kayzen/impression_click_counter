@@ -106,6 +106,7 @@ public class BatchDataProcessor implements Serializable, Runnable {
                 + " MySQLCounter at:" + mysqlCounter);
           }
         }
+        SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
       } catch (SQLException e) {
         logger.error(
             "Exception while updating MapDB Data for threadIndex:" + threadIndex + " mapDB at:"
@@ -234,6 +235,7 @@ public class BatchDataProcessor implements Serializable, Runnable {
           database.batchQuery(impressions);
         }
 
+        SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
         long timeTaken = System.currentTimeMillis() - this.startBatchTimeMillis;
         this.pendingBufferSize -= this.batchCount;
         this.batchCount = 0;

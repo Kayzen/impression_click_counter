@@ -404,8 +404,8 @@ public class KafkaSubscriber implements Runnable {
       } catch (Exception exception) {
         logger
             .error(String.format(
-                "fetchDataFromBroker :: Exception while fetching data from the Broker for Topic : %s, Partition : %s. Reason : %s, numberOfTry : %s. Setting response as null "
-                    + "and will retry if numberOfTry < 3.", topic, partition,
+                "fetchDataFromBroker :: Exception while fetching data from the Broker for Topic : %s, Partition : %s, Host : %s. Reason : %s, numberOfTry : %s. Setting response as null "
+                    + "and will retry if numberOfTry < 3.", topic, partition,leadBrokerHost,
                 exception.getLocalizedMessage(),
                 numberOfTry));
         fetchResponse = null;

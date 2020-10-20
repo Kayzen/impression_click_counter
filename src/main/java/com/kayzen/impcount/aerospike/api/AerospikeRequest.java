@@ -26,7 +26,7 @@ public class AerospikeRequest {
     aeroConfig = confProperties;
     protoSyncRequest = syncBatchUpdateRequest;
     this.dc = dc;
-    logger.info(protoSyncRequestToJson());
+    //logger.info(protoSyncRequestToJson());
   }
 
   private byte[] requestToByteStream() {
