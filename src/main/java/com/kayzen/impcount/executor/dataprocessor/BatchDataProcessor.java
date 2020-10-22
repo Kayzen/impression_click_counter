@@ -235,7 +235,7 @@ public class BatchDataProcessor implements Serializable, Runnable {
           database.batchQuery(impressions);
         }
 
-        SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
+        //SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
         long timeTaken = System.currentTimeMillis() - this.startBatchTimeMillis;
         this.pendingBufferSize -= this.batchCount;
         this.batchCount = 0;
