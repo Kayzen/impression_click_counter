@@ -1,0 +1,17 @@
+syntax="proto2";
+package com.kayzen.impcount.aerospike.api;
+
+import "binvalue.proto";
+
+message SyncBatchUpdateRequest {
+  message row {
+    optional string key = 1 [default = ""];
+    optional BinData value = 2;
+    optional string option = 3 [default = ""];
+  }
+
+  optional string group = 1 [default = ""];
+  optional string column = 2 [default = ""];
+  repeated row rows = 3;
+  optional int32 reqcount = 4 [default = 0];
+}

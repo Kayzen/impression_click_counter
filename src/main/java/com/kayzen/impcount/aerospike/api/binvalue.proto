@@ -1,0 +1,9 @@
+syntax="proto2";
+package com.kayzen.impcount.aerospike.api;
+
+import "fcapdata.proto";
+
+message BinData {
+   optional string value = 1 [default = ""];
+   optional FcapData fcapValue = 2;
+}

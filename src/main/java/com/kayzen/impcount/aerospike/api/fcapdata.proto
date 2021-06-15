@@ -1,0 +1,29 @@
+syntax="proto2";
+package com.kayzen.impcount.aerospike.api;
+
+message FcapData {
+  enum option {
+    add = 0;
+    remove = 1;
+  }
+
+  enum capType {
+    impression = 0;
+    click = 1;
+    install = 2;
+  }
+
+  enum campaignOrLineItem {
+    campaign = 0;
+    lineitem = 1;
+  }
+
+  message fcapCampaignOrLineItem {
+    optional int32 campaignOrLineItemID = 1;
+    optional option option = 2;
+    optional capType capType = 3;
+    optional campaignOrLineItem campaignOrLineItem = 4;
+  }
+
+  repeated fcapCampaignOrLineItem value = 1;
+}
