@@ -25,8 +25,8 @@ BEGIN
 
 			
 			  IF(@min_id != -1 AND @max_id != -1) THEN
-				    SET @start_id = 0;
-		        SET @end_id = IF(@max_id <= @chunk_size, @max_id+1, @chunk_size);
+				    SET @start_id = @min_id;
+		        SET @end_id = IF(@max_id <= @chunk_size, @max_id+1, @start_id+@chunk_size);
 				-- Loop over chunks for update
 				WHILE @start_id < @max_id+1 DO
 					-- set query for this thread_id, start_id & end_id

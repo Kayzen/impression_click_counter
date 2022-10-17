@@ -1,12 +1,12 @@
 package com.kayzen.impcount.executor.kafka;
 
+import com.applift.platform.commons.utils.Config;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Iterables;
 import com.kayzen.impcount.model.ImpressionObject;
 import com.kayzen.impcount.model.ImpressionObjectProvider;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
-import com.applift.platform.commons.utils.Config;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Iterables;
 import com.kayzen.impcount.utils.Utils;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.immutable.Stream.Cons;
 
 public class KafkaSubscriber implements Runnable {
 
@@ -164,6 +163,10 @@ public class KafkaSubscriber implements Runnable {
           payload.get(bytes);
           processLine(new String(bytes, "UTF-8"), latestOffset);
           isMessageReceived = true;
+
+          if (lastCommittedTime < System.currentTimeMillis() - Constants.TEN_SECONDS_MILLS) {
+            commit();
+          }
         }
 
         if (!isMessageReceived) {
@@ -314,10 +317,13 @@ public class KafkaSubscriber implements Runnable {
     TopicAndPartition topicAndPartition = new TopicAndPartition(topic, partition);
     List<TopicAndPartition> requestInfo = new ArrayList<>();
     requestInfo.add(topicAndPartition);
-    OffsetFetchResponse offsetFetchResponse = consumer.fetchOffsets(new OffsetFetchRequest(config
-        .getString(Constants.KAFKA_CONSUMER_OFFSET_COMMIT_GROUP_ID), requestInfo, Constants.OFFSET_COMMIT_VERSION,
-        Constants.CORRELATION_ID,
-        clientName));
+    try {
+      OffsetFetchResponse offsetFetchResponse = consumer.fetchOffsets(new OffsetFetchRequest(config
+          .getString(Constants.KAFKA_CONSUMER_OFFSET_COMMIT_GROUP_ID), requestInfo,
+          Constants.OFFSET_COMMIT_VERSION,
+          Constants.CORRELATION_ID,
+          clientName));
+
     if (offsetFetchResponse == null) {
       logger
           .error(String
@@ -356,6 +362,12 @@ public class KafkaSubscriber implements Runnable {
       } else {
         return retrievedOffset;
       }
+    }
+    }catch(Exception e){
+      logger.error(String.format(
+          "getLastOffset :: Exception while fetching last offset data the from Broker for Topic : %s, Partition : %s, Broker : %s. Offset fetch response is null.",
+          topic, partition,leadBrokerHost));
+      throw e;
     }
   }
 
@@ -468,6 +480,7 @@ public class KafkaSubscriber implements Runnable {
           + newOffset + " latestOffset:" + latestOffset + " : " + getKafkaMetaData());
     }
     if (newOffset > committedOffset) {
+      logger.info("Committing offset for " + getKafkaMetaData() + " newOffset : " + newOffset + " committedOffset : " + committedOffset);
       Map<TopicAndPartition, OffsetAndMetadata> requestInfo = new HashMap<>();
       requestInfo.put(new TopicAndPartition(topic, partition),
           new OffsetAndMetadata(newOffset, OffsetAndMetadata.NoMetadata(),

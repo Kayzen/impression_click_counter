@@ -94,7 +94,7 @@ public class KafkaSubscriberExecutorService implements Runnable, BaseExecutor {
     } catch (Exception e) {
       logger.error(
           "createAndStartSubscribers :: Exception occurred during consumer start. Going to stop already started consumer. Exception = "
-              + e.getLocalizedMessage());
+              , e);
       shutdown();
     }
   }

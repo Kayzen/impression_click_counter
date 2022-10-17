@@ -54,8 +54,8 @@ public class MapDBRestorerExecutor implements Runnable, BaseExecutor {
     } catch (InterruptedException e) {
       logger.error("MapDBRestorerExecutor interrupted", e);
     }
-    SharedDataObject.printStatistics();
-    SharedDataObject.setKeepPrintingStats(false);
+    //SharedDataObject.printStatistics();
+    //SharedDataObject.setKeepPrintingStats(false);
     logger.info("Finished all MapDBRestorerExecutor threads.");
     long timeTaken = System.currentTimeMillis() - startTime;
     logger.info("MapDBRestorerExecutor: Total Time taken: " + Utils.printDuration(timeTaken));

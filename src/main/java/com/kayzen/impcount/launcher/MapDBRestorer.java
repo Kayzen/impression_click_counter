@@ -14,7 +14,7 @@ import org.apache.commons.cli.Options;
 
 public class MapDBRestorer extends AbstractLauncher {
 
-  private static Options options;
+
 
   private static List<Thread> threads = new ArrayList<>();
   private static List<BaseExecutor> executors = new ArrayList<>();
@@ -30,9 +30,10 @@ public class MapDBRestorer extends AbstractLauncher {
     options.addOption("do", Constants.PROCESS_ONLY_DEVICES, true, "Choices: true|false");
 
     // Validate the required inputs are missing or not.
-    String[] mandatoryParams = new String[]{Constants.NUMBER_OF_WRITE_THREADS,
+    mandatoryParams = new String[]{Constants.NUMBER_OF_WRITE_THREADS,
         Constants.ENVIRONMENT, Constants.BATCH_SIZE, Constants.MAP_LOCATION,
         Constants.DB_HOST_NAME, Constants.PROCESS_ONLY_DEVICES};
+    parseOptions(args);
 
     Environment environment = validateAndGetEnvironment();
 

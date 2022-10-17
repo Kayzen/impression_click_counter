@@ -37,7 +37,7 @@ public class Constants {
   public static final int TEN_MILLION = 10_000_000;
 
   //TODO-dgpatil comment for testing
-  public static final int FIFTY_MILLION = 50_000_000;
+  public static final int FIFTY_MILLION = 100_000_000;
   public static final int TWO_HUNDRED_MILLION = 200_000_000;
 
   //TODO-dgpatil uncomment for testing
