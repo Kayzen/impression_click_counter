@@ -1,0 +1,1 @@
+CALL expire_impression_counter_events(30, 5000);

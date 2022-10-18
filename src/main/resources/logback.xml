@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <charset>UTF-8</charset>
+      <Pattern>%-30(%d{HH:mm:ss.SSS} %-4r [%-15thread]) %2level [%X] %logger{0} - %msg%n</Pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${log.name}.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${log.name}_%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern>
+      <maxFileSize>300MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>5GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>%-30(%d{HH:mm:ss.SSS} [%-15thread]) %2level [%X] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="consoleAppender"/>
+    <appender-ref ref="ROLLING-FILE"/>
+  </root>
+</configuration>
