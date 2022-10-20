@@ -1,9 +1,21 @@
 #!/bin/bash
+echo `date +"%Y-%m-%d" -d"15 day ago"` > /home/platform/impression-counter_today_minus_15.txt
+diff /home/platform/jenkin_last_run.txt /home/platform/impression-counter_today_minus_15.txt
+if [ $? -ne 0 ];
+then
+    echo "Partition creation wont run for Impression-Counter today"
+    exit 0
+else
+    echo "Daily partitions on Impression-Counter will be run today"
+fi
+
 sudo supervisorctl stop impression_counter_aero
 sudo supervisorctl stop impression_counter_ingestor
 
 EXIT_STATUS=0
 
+now=$(date)
+echo "Starting Impression-Counter partition creation :$now"
 mysql --defaults-file=/home/platform/.fcapdb2_ic -f impression_counter < /home/platform/impression_click_counter/schema/partitions/daily_partitions.sql
 if [ $? -ne 0 ];
 then
@@ -25,4 +37,5 @@ fi
 sudo supervisorctl start impression_counter_aero
 sudo supervisorctl start impression_counter_ingestor
 
+echo `date +"%Y-%m-%d"` > /home/platform/jenkin_last_run.txt
 exit $EXIT_STATUS
