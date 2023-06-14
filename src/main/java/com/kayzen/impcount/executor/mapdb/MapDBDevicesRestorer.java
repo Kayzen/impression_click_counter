@@ -5,6 +5,7 @@ import com.applift.platform.commons.db.MySqlDatabase;
 import com.applift.platform.commons.enums.Environment;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.DeviceIterator;
+import com.kayzen.impcount.utils.MySqlDbUtils;
 import java.io.Serializable;
 import net.openhft.chronicle.map.ChronicleMap;
 import org.slf4j.Logger;
@@ -50,9 +51,16 @@ public class MapDBDevicesRestorer implements Serializable, Runnable, MapDBBaseRe
     try {
       batchStartTime = System.currentTimeMillis();
       deviceIterator = new DeviceIterator(database, threadIndex, batchSize);
+      long mysqlCounter = MySqlDbUtils.getPartitionCounterFromDB(database, threadIndex);
       while (!shutdown && deviceIterator.next()) {
         partitionCounter++;
         deviceMap.put(deviceIterator.getSha1(), deviceIterator.getDeviceId());
+        if (partitionCounter % batchSize == 0) {
+          SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
+          logger.warn("Updating MapDB Data for threadIndex:" + threadIndex + " mapDB at:"
+              + partitionCounter
+              + " MySQLCounter at:" + mysqlCounter);
+        }
       }
     } catch (Exception e) {
       logger.error("Exception occurred while processing DataProcessor. Exception:", e);

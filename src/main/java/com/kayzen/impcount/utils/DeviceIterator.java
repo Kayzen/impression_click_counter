@@ -27,19 +27,19 @@ public class DeviceIterator {
     this.startDeviceId = startDeviceId;
   }
 
-  public boolean next() throws SQLException {
+  public boolean next() throws Exception {
     return ((devicesResultSet != null && devicesResultSet.next()) || getNextResultSet());
   }
 
-  public String getSha1() throws SQLException {
+  public String getSha1() throws Exception {
     return devicesResultSet.getString(1);
   }
 
-  public long getDeviceId() throws SQLException {
+  public long getDeviceId() throws Exception {
     return devicesResultSet.getLong(2);
   }
 
-  private boolean getNextResultSet() throws SQLException {
+  private boolean getNextResultSet() throws Exception {
     close();
     long endDeviceId = startDeviceId + queryBatch;
     devicesResultSet = MySqlDbUtils
@@ -48,7 +48,7 @@ public class DeviceIterator {
     return (devicesResultSet != null && devicesResultSet.next());
   }
 
-  public void close() throws SQLException {
+  public void close() throws Exception {
     if (!(devicesResultSet == null || devicesResultSet.isClosed())) {
       devicesResultSet.close();
     }

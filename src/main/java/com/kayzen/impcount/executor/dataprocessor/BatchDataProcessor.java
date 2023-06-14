@@ -107,7 +107,7 @@ public class BatchDataProcessor implements Serializable, Runnable {
           }
         }
         SharedDataObject.setThreadPartitionCounterOpt(this.threadIndex, this.partitionCounter);
-      } catch (SQLException e) {
+      } catch (Exception e) {
         logger.error(
             "Exception while updating MapDB Data for threadIndex:" + threadIndex + " mapDB at:"
                 + partitionCounter + " MySQLCounter at:" + mysqlCounter, e);

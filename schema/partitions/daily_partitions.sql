@@ -96,4 +96,4 @@ CALL manage_partition('aerospike_impression_count_data_47', '+',  1, 'create', '
 CALL manage_partition('aerospike_impression_count_data_47', '-',  7,   'drop', 'false');
 
 CALL manage_partition('device_impressions_daily', '+',  1, 'create', 'false');
-CALL manage_partition('device_impressions_daily', '-', 35,   'drop', 'false');
+CALL manage_partition('device_impressions_daily', '-', 95,   'drop', 'false');
