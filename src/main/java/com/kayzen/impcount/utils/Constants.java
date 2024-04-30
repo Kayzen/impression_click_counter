@@ -38,7 +38,7 @@ public class Constants {
 
   //TODO-dgpatil comment for testing
   public static final int FIFTY_MILLION = 100_000_000;
-  public static final int TWO_HUNDRED_MILLION = 200_000_000;
+  public static final int TWO_HUNDRED_MILLION = 400_000_000;
 
   //TODO-dgpatil uncomment for testing
   //public static final int FIFTY_MILLION = 500;
@@ -85,6 +85,7 @@ public class Constants {
   public static final String BID_ID = "bid_id";
   public static final String CAMPAIGN_ID = "campaign_id";
   public static final String DPID_SHA1 = "dpid_sha1";
+  public static final String FINAL_DPIDSHA1 = "final_dpidsha1";
   public static final String TIMESTAMP = "timestamp";
   public static final String MOBILE_OBJECT_ID = "mobile_object_id";
   public static final String ADV_ID = "advertiser_id";

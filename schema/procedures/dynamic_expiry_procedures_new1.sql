@@ -1,11 +1,12 @@
-DROP PROCEDURE IF EXISTS `expire_impression_counter_events`;
+DROP PROCEDURE IF EXISTS `expire_impression_counter_events_new1`;
 DELIMITER $$
-CREATE PROCEDURE expire_impression_counter_events (_interval TINYINT,
+CREATE PROCEDURE expire_impression_counter_events_new1 (_interval TINYINT,
 									 _chunk_size INT)
 BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLSTATE '40001' SET @x2 = 1;
 	SET @EXECUTION_DAY_QUERY=CONCAT('SELECT DATE_FORMAT(CURRENT_DATE - INTERVAL ', _interval, ' DAY, \'%Y%m%d\') INTO @EXECUTION_DAY');
 	CALL execute_query(@EXECUTION_DAY_QUERY);
-	SET @EVENT_NAME=CONCAT('expire_impression_click_day_minus_', _interval);
+	SET @EVENT_NAME=CONCAT('expire_impression_click_new1_day_minus_', _interval);
 
 	SET @today = (select DATE_FORMAT(NOW(),'%Y%m%d'));
 	IF(@EXECUTION_DAY < @today) THEN
@@ -24,7 +25,7 @@ BEGIN
 			    SET @UPDATE_STATEMENT = CONCAT(@UPDATE_STATEMENT, ' AND id>=REPLACE_START_ID AND id<=REPLACE_END_ID AND status=\'active\'');
           CALL execute_query(@MIN_MAX_ID_QUERY);
 
-			
+
 			  IF(@min_id != -1 AND @max_id != -1) THEN
 				    SET @start_id = @min_id;
 		        SET @end_id = IF(@max_id <= @chunk_size, @max_id+1, @start_id+@chunk_size);

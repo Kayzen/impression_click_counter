@@ -55,7 +55,7 @@ public class SharedDataObject {
         File deviceMapFile = new File(
             mapLocation + Constants.DEVICE_MAP_THREAD + i + Constants.MAP);
         ChronicleMapLoader<String, Long> chronicleMapLoader = new ChronicleMapLoader<String , Long>(
-            deviceMapFile, "device-map-" + i, 40, Constants.FIFTY_MILLION){};
+            deviceMapFile, "device-map-" + i, 40, Constants.TWO_HUNDRED_MILLION){};
         deviceMapsFutureHMap.put(i, executor.submit(chronicleMapLoader));
       }
 

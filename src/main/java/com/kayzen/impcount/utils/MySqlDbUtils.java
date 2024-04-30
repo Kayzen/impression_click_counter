@@ -74,13 +74,14 @@ public class MySqlDbUtils {
     long startDeviceId,
     long endDeviceId) {
     try {
-      Statement statement = database.createReadStatement();
-      statement.setFetchSize(batchSize);
+      //Statement statement = database.createReadStatement();
+      //statement.setFetchSize(batchSize);
       String query = devicesReadQuery
         .replaceAll(REPLACE_THREAD_ID, String.valueOf(threadIndex))
         .replaceAll(REPLACE_START_DEVICE_ID, String.valueOf(startDeviceId))
         .replaceAll(REPLACE_END_DEVICE_ID, String.valueOf(endDeviceId));
-      return statement.executeQuery(query);
+      //return statement.executeQuery(query);
+      return database.executeSelectQuery(query);
     } catch (Exception e) {
       logger.error("getDevicesFromDB() :: Exception while retrieving devices:", e);
       return null;

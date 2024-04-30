@@ -66,11 +66,17 @@ public class ImpressionObjectProvider {
       String dpid_sha1 = rawJson.get(Constants.DPID_SHA1).getAsString();
 
       //if dpid_sha1 is empty then use user_agent & device_ip for generating dpid_sha1
-      if ((dpid_sha1 == null) || dpid_sha1.isEmpty()) {
+      /*if ((dpid_sha1 == null) || dpid_sha1.isEmpty()) {
         String userAgent = rawJson.get(Constants.USER_AGENT).getAsString();
         String userIp = rawJson.get(Constants.USER_IP).getAsString();
         if ((userAgent != null && !userAgent.isEmpty()) && (userIp != null && !userIp.isEmpty())) {
           dpid_sha1 = DeviceIDUtils.getSha1(userAgent + userIp);
+        }
+      }*/
+      if ((dpid_sha1 == null) || dpid_sha1.isEmpty()) {
+        String final_dpidsha1 = rawJson.get(Constants.FINAL_DPIDSHA1).getAsString();
+        if((final_dpidsha1 != null) && !final_dpidsha1.isEmpty()){
+          dpid_sha1 =  final_dpidsha1;
         }
       }
 
