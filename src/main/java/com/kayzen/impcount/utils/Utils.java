@@ -5,6 +5,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -259,4 +260,8 @@ public class Utils {
     return supportedTypeInt;
   }
 
+  public static boolean isValidSHA(String deviceId) {
+    return !Strings.isNullOrEmpty(deviceId) && (deviceId.matches("[a-fA-F0-9]{40}"));
+
+  }
 }

@@ -521,7 +521,7 @@ public class KafkaSubscriber implements Runnable {
                   logger.debug("fCapObject:" + fCapObject.toString());
 
                   if (fCapObject.getDeviceIdSha1() != null && !fCapObject.getDeviceIdSha1()
-                      .isEmpty()) {
+                      .isEmpty() && Utils.isValidSHA(fCapObject.getDeviceIdSha1())) {
                     try {
                       keyHashed = Constants.hf.newHasher()
                           .putString(fCapObject.getDeviceIdSha1(), Charsets.UTF_8)
