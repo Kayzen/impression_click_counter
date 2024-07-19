@@ -1,15 +1,13 @@
 package com.kayzen.impcount.aerospike.executor;
 
-import com.applift.platform.commons.db.DBContext;
 import com.applift.platform.commons.db.MySqlDatabase;
-import com.applift.platform.commons.enums.Environment;
 import com.applift.platform.commons.utils.Config;
 import com.kayzen.impcount.aerospike.AerospikeImpressionCountPProcessor;
 import com.kayzen.impcount.aerospike.AerospikeProcessor;
 import com.kayzen.impcount.aerospike.MySQLAeroImpressionCountData;
 import com.kayzen.impcount.aerospike.MySQLAerospikeData;
 import com.kayzen.impcount.aerospike.api.AerospikeRequest;
-import com.kayzen.impcount.aerospike.api.Syncbatchupdate.SyncBatchUpdateRequest;
+import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Datacenter;
 import java.io.Serializable;
@@ -49,6 +47,14 @@ public class AerospikeUpdateProcessor implements Serializable, Runnable {
   @Override
   public void run() {
     while (!shutdown) {
+      while(SharedDataObject.isDataUpdateDisabledFlag){
+        try {
+          Thread.sleep(Constants.TWO_MINUTES_MILLIS);
+        } catch (InterruptedException e) {
+          logger.error("Exception during sleep",e);
+        }
+      }
+      
       try {
         if (mySQLAerospikeData.nextResultSet()) {
           aerospikeProcessor = new AerospikeImpressionCountPProcessor();

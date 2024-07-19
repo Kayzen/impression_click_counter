@@ -3,18 +3,27 @@ package com.kayzen.impcount.launcher;
 
 //TODO-dgpatil-stats uncomment if required
 //import com.applift.fcap.utils.StatisticsPrinter;
+
+import com.applift.platform.commons.db.DBContext;
+import com.applift.platform.commons.db.MySqlDatabase;
 import com.applift.platform.commons.enums.Environment;
 import com.applift.platform.commons.executor.BaseExecutor;
 import com.applift.platform.commons.launcher.AbstractLauncher;
 import com.applift.platform.commons.utils.Config;
+import com.applift.platform.commons.utils.Util;
 import com.kayzen.impcount.executor.dataprocessor.BatchDataProcessorExecutor;
 import com.kayzen.impcount.executor.kafka.KafkaSubscriberExecutorService;
 import com.kayzen.impcount.executor.logreader.LogReaderExecutor;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Utils;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
@@ -57,6 +66,7 @@ public class ImpCounterBatchIngestor extends AbstractLauncher {
       int numberOfReadThreads = config.getInt(Constants.NUMBER_OF_READ_THREADS);
       int numberOfWriteThreads = config.getInt(Constants.NUMBER_OF_WRITE_THREADS);
       String dbHostName = config.getString(Constants.DB_HOST_NAME);
+      String dlmHostName = config.getString(Constants.DLM_HOST_NAME);
       Utils.setLogger("",Constants.IMPRESSION_COUNTER);
       SharedDataObject.init(numberOfWriteThreads, mapLocation);
 
@@ -79,6 +89,7 @@ public class ImpCounterBatchIngestor extends AbstractLauncher {
       }
 
       startBatchProcessing(environment, numberOfWriteThreads, dbHostName, batchSize);
+      startScheduledExecuter(environment,dlmHostName);
 
       //TODO-dgpatil-stats uncomment if required
       //startStatsPrinter(numberOfWriteThreads);
@@ -91,6 +102,31 @@ public class ImpCounterBatchIngestor extends AbstractLauncher {
 
     } catch (Exception e) {
       logger.error("Exception in FPABatchIngestor main method. Exception:" + e);
+    }
+  }
+
+  private static void startScheduledExecuter(Environment environment,String dlmHostName) throws Exception {
+    DBContext dbContext = new DBContext(environment,dlmHostName, LoggerFactory.getLogger(ImpCounterBatchIngestor.class));
+    MySqlDatabase database = new MySqlDatabase(dbContext);
+    ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    Runnable setIsDisabledFlag = () -> {
+      try {
+        SharedDataObject.isDataUpdateDisabledFlag = Util.getIsDisabledUpdateFlag(database.getConnection(),"IC");
+      } catch (SQLException e) {
+        logger.error("Error while updating isDataUpdateDisabledFlag",e);
+      }
+      logger.info("isDataUpdateDisabledFlag updated");
+    };
+
+    ScheduledFuture<?> scheduledFuture = ses.scheduleAtFixedRate(setIsDisabledFlag, 5, 2, TimeUnit.MINUTES);
+
+    while (true) {
+      Thread.sleep(1000);
+      if (!SharedDataObject.keepReadingQueues) {
+        scheduledFuture.cancel(true);
+        ses.shutdown();
+        break;
+      }
     }
   }
 

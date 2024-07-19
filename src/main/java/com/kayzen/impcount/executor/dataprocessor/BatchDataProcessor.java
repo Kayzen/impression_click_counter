@@ -224,6 +224,14 @@ public class BatchDataProcessor implements Serializable, Runnable {
   }
 
   private void executeBatch() {
+
+    while(SharedDataObject.isDataUpdateDisabledFlag){
+      try {
+        Thread.sleep(Constants.TWO_MINUTES_MILLIS);
+      } catch (InterruptedException e) {
+        logger.error("Exception during sleep",e);
+      }
+    }
     try {
       boolean isDeviceBatchExecuted = true;
       // creates devices
