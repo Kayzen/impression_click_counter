@@ -11,7 +11,6 @@ import com.kayzen.impcount.aerospike.executor.AerospikeUpdateExecutor;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Utils;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -108,7 +107,7 @@ public class AerospikeUpdater extends AbstractLauncher {
     Runnable setIsDisabledFlag = () -> {
       try {
         SharedDataObject.isDataUpdateDisabledFlag = Util.getIsDisabledUpdateFlag(database.getConnection(),"IC");
-      } catch (SQLException e) {
+      } catch (Exception e) {
         logger.error("Error while updating isDataUpdateDisabledFlag",e);
       }
       logger.info("isDataUpdateDisabledFlag updated");
