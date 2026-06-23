@@ -6,7 +6,6 @@ import com.applift.platform.commons.enums.Environment;
 import com.applift.platform.commons.executor.BaseExecutor;
 import com.applift.platform.commons.launcher.AbstractLauncher;
 import com.applift.platform.commons.utils.Config;
-import com.applift.platform.commons.utils.Util;
 import com.kayzen.impcount.aerospike.executor.AerospikeUpdateExecutor;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
@@ -106,7 +105,7 @@ public class AerospikeUpdater extends AbstractLauncher {
     ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
     Runnable setIsDisabledFlag = () -> {
       try {
-        SharedDataObject.isDataUpdateDisabledFlag = Util.getIsDisabledUpdateFlag(database.getConnection(),"IC");
+        SharedDataObject.isDataUpdateDisabledFlag = Utils.getIsDisabledUpdateFlag(database,"IC");
       } catch (Exception e) {
         logger.error("Error while updating isDataUpdateDisabledFlag",e);
       }
