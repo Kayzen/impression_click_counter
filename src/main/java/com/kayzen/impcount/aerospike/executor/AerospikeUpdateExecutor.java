@@ -8,7 +8,6 @@ import com.applift.platform.commons.utils.Config;
 import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Datacenter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +63,7 @@ public class AerospikeUpdateExecutor implements Runnable, BaseExecutor {
     executor.shutdown(); // Disable new tasks from being submitted
     try {
       executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+      SharedDataObject.setKeepReadingQueues(false);
     } catch (InterruptedException e) {
       logger.error("AerospikeUpdateExecutor interrupted", e);
     }

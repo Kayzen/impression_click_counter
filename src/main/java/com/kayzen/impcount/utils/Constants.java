@@ -21,6 +21,7 @@ public class Constants {
   public static final String BATCH_SIZE = "batchSize";
   public static final String DATA_INGESTION_METHOD = "dataIngestionMethod";
   public static final String DB_HOST_NAME = "dbHostName";
+  public static final String DLM_HOST_NAME = "dlmHostName";
 
 
   public static final long FIVE_HUNDRED_MILLS = 500;
@@ -30,6 +31,7 @@ public class Constants {
   public static final long TEN_SECONDS_MILLS = 10_000;
   public static final long THIRTY_SECONDS_MILLS = 30_000;
   public static final int SIXTY_SECONDS_MILLIS = 60_000;
+  public static final int TWO_MINUTES_MILLIS = 120_000;
   public static final int FIVE_MINUTES_MILLIS = 300_000;
   public static final long ONE_DAY_MILLS = 86_400_000;
   public static final int SHARED_OBJECT_QUEUE_SIZE = 5_000;

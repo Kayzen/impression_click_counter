@@ -29,6 +29,7 @@ public class SharedDataObject {
   public static List<List<Long>> kafkaOffsetPerProcessor;
   private static int numberOfWriteThreads;
   public static int kafkaConsumerCount;
+  public static boolean isDataUpdateDisabledFlag;
 
 
   public static ChronicleMap<Integer, Long> threadPartitionMap;

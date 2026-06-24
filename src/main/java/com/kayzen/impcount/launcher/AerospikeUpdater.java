@@ -1,18 +1,24 @@
 package com.kayzen.impcount.launcher;
 
+import com.applift.platform.commons.db.DBContext;
+import com.applift.platform.commons.db.MySqlDatabase;
 import com.applift.platform.commons.enums.Environment;
 import com.applift.platform.commons.executor.BaseExecutor;
 import com.applift.platform.commons.launcher.AbstractLauncher;
 import com.applift.platform.commons.utils.Config;
 import com.kayzen.impcount.aerospike.executor.AerospikeUpdateExecutor;
+import com.kayzen.impcount.model.SharedDataObject;
 import com.kayzen.impcount.utils.Constants;
 import com.kayzen.impcount.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.collection.immutable.Stream.Cons;
 
 
 public class AerospikeUpdater extends AbstractLauncher {
@@ -37,11 +43,13 @@ public class AerospikeUpdater extends AbstractLauncher {
     Config config = Config.getConfig(Constants.AERO_APPLICATION_CONF,environment);
 
     String dbHostName = config.getString(Constants.DB_HOST_NAME);
+    String dlmHostName = config.getString(Constants.DLM_HOST_NAME);
     int numberOfWriteThreads = config.getInt(Constants.NUMBER_OF_WRITE_THREADS);
     int batchSize = Integer.parseInt(cmdLine.getOptionValue(Constants.BATCH_SIZE));
     shutdown = false;
 
     startAeroUpdater(environment, config.getSubConfig(Constants.AERO), dbHostName, batchSize, numberOfWriteThreads);
+    startScheduledExecuter(environment,dlmHostName);
     addShutDownHook();
     //TODO-dgpatil-stats commenting stats code
     //startStatsPrinter();
@@ -91,4 +99,28 @@ public class AerospikeUpdater extends AbstractLauncher {
   }
    */
 
+  private static void startScheduledExecuter(Environment environment,String dlmHostName) throws Exception {
+    DBContext dbContext = new DBContext(environment,dlmHostName, LoggerFactory.getLogger(AerospikeUpdater.class));
+    MySqlDatabase database = new MySqlDatabase(dbContext);
+    ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    Runnable setIsDisabledFlag = () -> {
+      try {
+        SharedDataObject.isDataUpdateDisabledFlag = Utils.getIsDisabledUpdateFlag(database,"IC");
+      } catch (Exception e) {
+        logger.error("Error while updating isDataUpdateDisabledFlag",e);
+      }
+      logger.info("isDataUpdateDisabledFlag updated");
+    };
+
+    ScheduledFuture<?> scheduledFuture = ses.scheduleAtFixedRate(setIsDisabledFlag, 5, 2, TimeUnit.MINUTES);
+
+    while (true) {
+      Thread.sleep(1000);
+      if (!SharedDataObject.keepReadingQueues) {
+        scheduledFuture.cancel(true);
+        ses.shutdown();
+        break;
+      }
+    }
+  }
 }

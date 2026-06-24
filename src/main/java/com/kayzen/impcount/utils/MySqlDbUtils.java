@@ -120,15 +120,15 @@ public class MySqlDbUtils {
 
   public static ResultSet getAerospikeDeviceData(MySqlDatabase database, int batchSize,
     String threadIndex,Datacenter dc) {
+    String query = String.format(aerospikeDataReadQuery, batchSize)
+            .replaceAll(REPLACE_THREAD_ID, threadIndex)
+            .replaceAll(REPLACE_DATA_CENTER,dc.getValue());;
     try {
       Statement statement = database.createReadStatement();
       //statement.setFetchSize(batchSize);
-      String query = String.format(aerospikeDataReadQuery, batchSize)
-        .replaceAll(REPLACE_THREAD_ID, threadIndex)
-        .replaceAll(REPLACE_DATA_CENTER,dc.getValue());
       return statement.executeQuery(query);
     } catch (Exception e) {
-      logger.error("getAerospikeDeviceData() :: Exception while retrieving aerospike data:", e);
+      logger.error("getAerospikeDeviceData() :: Exception while retrieving aerospike data: {}",query, e);
       return null;
     }
   }

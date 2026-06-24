@@ -4,6 +4,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
+import com.applift.platform.commons.db.MySqlDatabase;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.io.File;
@@ -13,6 +14,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +37,7 @@ public class Utils {
   private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
   private static Splitter dashSplitter = Splitter.on("-").omitEmptyStrings().trimResults();
   public static final long SECONDS_IN_A_DAY = 86400L;
+  public static final String PROCESS_TYPE = "PROCESS_TYPE";
 
   public static String generateUUID() {
     return UUID.randomUUID().toString();
@@ -263,5 +268,30 @@ public class Utils {
   public static boolean isValidSHA(String deviceId) {
     return !Strings.isNullOrEmpty(deviceId) && (deviceId.matches("[a-fA-F0-9]{40}"));
 
+  }
+
+  public static boolean getIsDisabledUpdateFlag(MySqlDatabase database, String processName) throws Exception {
+
+    String query = "select is_disabled from process_data where process_type = 'PROCESS_TYPE'";
+    boolean is_disabled = false;
+    query = query.replaceAll(PROCESS_TYPE, processName);
+    Statement stmt = null;
+    ResultSet rs = null;
+    try {
+      stmt = database.createReadStatement();
+      rs = stmt.executeQuery(query);
+
+      if (rs != null && rs.next()) {
+        is_disabled = rs.getBoolean("is_disabled");
+        return is_disabled;
+      }
+    } catch (Exception e) {
+      throw new Exception(e);
+    } finally {
+      rs.close();
+      stmt.close();
+      database.close();
+    }
+    return false;
   }
 }
